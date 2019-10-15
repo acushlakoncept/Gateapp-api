@@ -19,12 +19,12 @@ class VerificationController extends Controller
     public function verify(Request $request, User $user) {
 
         $this->validate($request, [
-            'verifycode' => 'required|max:6'
+            'verifycode'  => 'required|max:6',
+            'device_id' => 'required|min:12'
         ]);
 
         $verifycode = $request->input('verifycode');
-
-        $checkCode = User::where('verifycode', $verifycode)->exists();
+        $checkCode  = User::where('verifycode', $verifycode)->exists();
 
         if ($checkCode) {
 
@@ -34,7 +34,8 @@ class VerificationController extends Controller
         
             if ($user->email_verified_at == null){
                 //generate a new verify code 
-                $user->verifycode = $this->generatedPassword();
+                $user->verifycode  =  $this->generatedPassword();
+                $user->device_id   =  $request->input('device_id');
                 $user->email_verified_at = date("Y-m-d H:i:s");
                 $user->save();
                 
