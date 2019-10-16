@@ -18,6 +18,8 @@ class CreateResidentsAndGatemansTable extends Migration
             $table->unsignedBigInteger('gateman_id');   //references users table with role = 2
             $table->timestamps();
 
+            $table->foreign('resident_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('gateman_id')->references('id')->on('users')->onDelete('cascade');
 
         });
     }

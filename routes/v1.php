@@ -16,10 +16,10 @@
     Route::post('verify', 'Auth\VerificationController@verify');
 
     //forgot Password
-    Route::post('password/verify', 'Auth\ForgotPasswordController@verifyPassword');
+    Route::post('phone/verify', 'Auth\ForgotPhoneController@verifyPhone');
 
     //Reset password for a new password
-    Route::put('password/reset', 'Auth\ResetPasswordController@reset');
+    Route::put('phone/reset', 'Auth\ResetPhoneController@reset');
 
 
 
@@ -87,7 +87,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::put('/user/edit', 'UserProfileController@update');
 
     //Change Password
-    Route::put('/user/password', 'UserProfileController@password');
+    Route::put('/user/phone', 'UserProfileController@password');
 
     //Delete user account
     Route::delete('/user/delete', 'UserProfileController@destroy');
@@ -154,6 +154,9 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 
     //Get All Service Provider
     Route::get('/service-provider', 'ServiceProviderController@showAll');
+
+    // Get requests for a gateman
+    Route::get('gateman/requests', 'GatemanController@residentRequest');
 });
 
 //This our testing api routes
