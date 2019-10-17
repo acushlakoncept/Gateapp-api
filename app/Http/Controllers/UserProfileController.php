@@ -56,6 +56,9 @@ class UserProfileController extends Controller
             $res['status'] = true;
             $res['message'] = 'User found';
             $res['user'] = $user;
+
+            $user->notify(new VisitorArrivedNotification);
+            
             return response()->json($res, 200);
         }else {
             $res['status'] = false;
