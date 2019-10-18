@@ -21,6 +21,7 @@ class CreateVisitorsTable extends Migration
             $table->string('purpose', 40);
             $table->string('image', 100)->default('no_image.jpg');
             $table->string('status', 20);
+            $table->string('qr_code', 20);
             $table->timestamp('time_in')->useCurrent();
             $table->timestamp('time_out')->nullable();
             $table->unsignedBigInteger('user_id');
@@ -28,10 +29,6 @@ class CreateVisitorsTable extends Migration
             // table indexes
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
-            // table meta
-            $table->engine = 'InnoDB';
-            $table->charset = 'utf8';
-            $table->collation = 'utf8_unicode_ci';
         });
     }
 

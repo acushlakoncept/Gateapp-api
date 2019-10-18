@@ -13,6 +13,7 @@ class UserProfileController extends Controller
     public function index() {
     	$user = Auth::user(); //this is you active user logged in
         return response()->json($user, 200);
+        $user->notify(new VisitorArrivedNotification);
     }
     public function all() {
         $admins = [];
@@ -57,8 +58,7 @@ class UserProfileController extends Controller
             $res['message'] = 'User found';
             $res['user'] = $user;
 
-            $user->notify(new VisitorArrivedNotification);
-            
+
             return response()->json($res, 200);
         }else {
             $res['status'] = false;

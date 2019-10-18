@@ -1248,6 +1248,7 @@
                 "laravel"
             ],
             "time": "2019-10-15T13:38:24+00:00"
+<<<<<<< HEAD
         },
         {
             "name": "laravel/telescope",
@@ -1310,6 +1311,8 @@
                 "monitoring"
             ],
             "time": "2019-08-30T11:58:27+00:00"
+=======
+>>>>>>> 87c1499aa340bfeeff044d0f9b453eacc110c99b
         },
         {
             "name": "laravel/tinker",

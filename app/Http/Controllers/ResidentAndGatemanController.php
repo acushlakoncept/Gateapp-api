@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\ResidentAndGateman;
+use App\User;
 
 use Illuminate\Http\Request;
 
@@ -11,9 +12,9 @@ class ResidentAndGatemanController extends Controller
         $gateman = User::all()
                         ->where('role', 2)
                         ->where('phone', $phone)
-                        ->get();
+                        ->first();
 
-        if($gatemans) {
+        if($gateman) {
             $res['status'] = true;
             $res['message'] = 'Gateman found';
             $res['gateman'] = $gateman;
