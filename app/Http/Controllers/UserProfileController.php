@@ -1,5 +1,6 @@
 <?php
 namespace App\Http\Controllers;
+use App\Http\Controllers\ImageController;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -8,12 +9,20 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
+use Notifiable;
+use App\Notifications\VisitorArrivedNotification;
+
+
+
 class UserProfileController extends Controller
 {
+
+
     public function index() {
-    	$user = Auth::user(); //this is you active user logged in
-        return response()->json($user, 200);
-        $user->notify(new VisitorArrivedNotification);
+        $user = Auth::user(); //this is you active user logged in
+      
+        // return response()->json($user, 200);
+
     }
     public function all() {
         $admins = [];
@@ -149,5 +158,14 @@ class UserProfileController extends Controller
             $res['message'] = 'User unsuccessfully, user not found or an error occured, please try again!';
             return response()->json($res, 501);
         }
+    }
+
+    public function upload(Request $request, ImageController $image) {
+        $this->validate($request, [
+         'image' => "image|max:4000|required",
+        ]);
+        //Image Engine
+        $res = $image->imageUpload($request);
+        return response()->json($res, $res['status_code']);
     }
 }
