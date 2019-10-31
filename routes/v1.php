@@ -51,6 +51,17 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::put('/estate/edit/{id}', 'EstateController@update')->middleware('admin');
 
 
+
+    // Show all visitor
+    Route::get('allVisitors', 'VisitorController@index')->middleware('admin');
+
+
+    //(Admin interactions with Estates)
+
+    //Admin only Update Estates by estate_id
+    Route::put('/estate/edit/{id}', 'EstateController@update')->middleware('admin');
+
+
     //Delete Estates by estate_id
     Route::delete('/estate/delete/{estate}', 'EstateController@deleteEstate')->middleware('admin');
 
@@ -77,11 +88,61 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
 
     // Show all visitor
-    Route::get('visitors/all', 'VisitorController@index')->middleware('admin');
+
+    Route::get('visitors/all', 'VisitorController@index')->middleware('superAdmin');
+
+    //create faq
+    Route::post('faq', 'FaqController@store')->middleware('superAdmin');
+    //edit faq
+    Route::put('faq/{id}', 'FaqController@update')->middleware('superAdmin');
+    //delete faq
+    Route::delete('faq/{id}', 'FaqController@destroy')->middleware('superAdmin');
+    //view support message
+    Route::get('/support', 'SupportController@index')->middleware('superAdmin');
+    //view one support message
+    Route::get('/support/{id}', 'SupportController@show')->middleware('superAdmin');
+    //delete support message
+    Route::delete('/support/{id}', 'SupportController@destroy')->middleware('superAdmin');
+
+    // Show Total Number of Estates on the system
+    Route::get('statistics/estate', 'Statistics\EstateStatsController@index')->middleware('superAdmin');
+
+    // Show  Total Number of Estates added that week
+    Route::get('statistics/weeklyEstate', 'Statistics\EstateStatsController@showWeek')->middleware('superAdmin');
+
+    // Show Total Number of Estates added that month
+    Route::get('statistics/monthlyEstate', 'Statistics\EstateStatsController@showMonth')->middleware('superAdmin');
+
+    // Show Total Number of Service Providers on the system
+    Route::get('statistics/service', 'Statistics\ServiceStatsController@index')->middleware('superAdmin');
+
+    // Show Total Number of Service Providers added that week
+    Route::get('statistics/weeklyService', 'Statistics\ServiceStatsController@weeklyService')->middleware('superAdmin');
+
+    // Show Total Number of Service Providers added that month
+    Route::get('statistics/monthlyService', 'Statistics\ServiceStatsController@monthlyService')->middleware('superAdmin');
+
+    // Show Total Number of Visits scheduled on the Application
+    Route::get('statistics/visits', 'Statistics\VisitorStatsController@index')->middleware('superAdmin');
+
+    //Show Total Number of Visits Scheduled for that week on the application
+    Route::get('statistics/weeklyVisits', 'Statistics\VisitorStatsController@weeklyVisits')->middleware('superAdmin');
+
+    //Show Total Number of Visits Scheduled for that month on the application
+    Route::get('statistics/monthlyVisits', 'Statistics\VisitorStatsController@monthlyVisits')->middleware('superAdmin');
+
+    //Show Total Number of Service Providers on the system
+    Route::get('statistics/service', 'Statistics\ServiceStatsController@index')->middleware('superAdmin');
+
+    //Show Pending Service Provider Requests on the systen
+    Route::get('statistics/pendingService', 'Statistics\ServiceStatsController@pendingRequests')->middleware('superAdmin');
+
+    //Show total Number of service Providers in the estate of logged in Estate Admin
+    Route::get('statistics/estateService/', 'Statistics\ServiceStatsController@show')->middleware('estateAdmin');
+
+    //Show total number of pending service providers in the estate of logged in Estate Admin
+    Route::get('statistics/pendingEstateService/', 'Statistics\ServiceStatsController@pendingEstateRequests')->middleware('estateAdmin');
 });
-
-
-
 
 // General Users Routes *******************************************************
 Route::group(['middleware' => ['jwt.verify']], function () {
@@ -140,7 +201,17 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     //Select Estate
     Route::post('/estate/choose/{id}', 'EstateController@estateMemeber');
 
+    // Get a single gateman or all gatemen for an estate
+    Route::get('estate/{estate_id}/gateman/{id?}', 'GatemanController@estateGatemen')->middleware('estateAdmin');
 
+    // Add gateman to an estate
+    Route::post('estate/{id}/gateman', 'GatemanController@addEstateGateman')->middleware('estateAdmin');
+
+    // Edit a gateman for an estate
+    Route::put('estate/{estate_id}/gateman/{id}', 'GatemanController@updateEstateGateman')->middleware('estateAdmin');
+
+    // Delete a single gateman for an estate
+    Route::delete('estate/{estate_id}/gateman/{id}', 'GatemanController@deleteEstateGateman')->middleware('estateAdmin');
 
     //(Users Messging)
     //Get message
@@ -181,7 +252,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     //show payment
     Route::get('/payment/{id}', 'PaymentController@oneUniquePayment')->middleware('checkResident');
-
 
 
     //(Users Visitors)
@@ -272,6 +342,9 @@ Route::post('/support/send', 'SupportController@send');
 Route::get('/support/{id}', 'SupportController@show')->middleware('admin');
 Route::delete('/support/{id}', 'SupportController@destroy')->middleware('admin');
 
+// Notification types
+Route::get('notifications/types', 'NotifyController@types');
+
 //This our testing api routes
 Route::get('test', 'TestController@test');
 Route::get('generate-code', 'TestController@qrCode');
@@ -303,6 +376,8 @@ Route::get('/test-notification2', function () {
     $gateman->notify(new App\Notifications\VisitorArrivalNotification($resident, $gateman, $visitor));
 });
 
+//----------- Service provider request route ---------------------------------//
+Route::post("service_provider/create_request", "ServiceProviderController@create_request");
 
 // Route::get('init', function () {
 //     event(new App\Events\notify('Someone'));
